@@ -289,15 +289,16 @@ namespace oriwotw_save_tool
             // 
             // statusTextLabel
             // 
+            this.statusTextLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.statusTextLabel.AutoSize = true;
-            this.statusTextLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.statusTextLabel.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.statusTextLabel.Location = new System.Drawing.Point(6, 269);
             this.statusTextLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.statusTextLabel.MinimumSize = new System.Drawing.Size(200, 0);
             this.statusTextLabel.Name = "statusTextLabel";
-            this.statusTextLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.statusTextLabel.Size = new System.Drawing.Size(200, 18);
+            this.statusTextLabel.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
+            this.statusTextLabel.Size = new System.Drawing.Size(200, 24);
             this.statusTextLabel.TabIndex = 19;
             this.statusTextLabel.Text = "Fuck you";
             this.statusTextLabel.Click += new System.EventHandler(this.statusTextLabel_Click);
