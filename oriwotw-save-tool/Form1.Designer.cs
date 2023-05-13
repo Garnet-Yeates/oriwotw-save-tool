@@ -31,6 +31,7 @@ namespace oriwotw_save_tool
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.selectInitialLabel = new System.Windows.Forms.Label();
             this.initialFileSelectionTable = new System.Windows.Forms.TableLayoutPanel();
             this.chooseInitialFilePaddingPanel = new System.Windows.Forms.Panel();
@@ -315,7 +316,7 @@ namespace oriwotw_save_tool
             this.selectReplaceOrInsertTable.Controls.Add(this.addButton, 1, 0);
             this.selectReplaceOrInsertTable.Dock = System.Windows.Forms.DockStyle.Top;
             this.selectReplaceOrInsertTable.Location = new System.Drawing.Point(6, 236);
-            this.selectReplaceOrInsertTable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.selectReplaceOrInsertTable.Margin = new System.Windows.Forms.Padding(5, 3, 4, 3);
             this.selectReplaceOrInsertTable.Name = "selectReplaceOrInsertTable";
             this.selectReplaceOrInsertTable.RowCount = 1;
             this.selectReplaceOrInsertTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -380,16 +381,16 @@ namespace oriwotw_save_tool
             this.nameRepInsAddPaddingPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.nameRepInsAddPaddingPanel.Location = new System.Drawing.Point(6, 186);
             this.nameRepInsAddPaddingPanel.Name = "nameRepInsAddPaddingPanel";
-            this.nameRepInsAddPaddingPanel.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.nameRepInsAddPaddingPanel.Padding = new System.Windows.Forms.Padding(6, 3, 8, 3);
             this.nameRepInsAddPaddingPanel.Size = new System.Drawing.Size(322, 29);
             this.nameRepInsAddPaddingPanel.TabIndex = 15;
             // 
             // customNameTextBox
             // 
             this.customNameTextBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.customNameTextBox.Location = new System.Drawing.Point(4, 3);
+            this.customNameTextBox.Location = new System.Drawing.Point(6, 3);
             this.customNameTextBox.Name = "customNameTextBox";
-            this.customNameTextBox.Size = new System.Drawing.Size(314, 23);
+            this.customNameTextBox.Size = new System.Drawing.Size(308, 23);
             this.customNameTextBox.TabIndex = 0;
             // 
             // nameRepInsAddLabel
@@ -410,11 +411,12 @@ namespace oriwotw_save_tool
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(334, 301);
             this.Controls.Add(this.basePanel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MaximumSize = new System.Drawing.Size(400, 340);
             this.MinimumSize = new System.Drawing.Size(350, 340);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Ori Save Tool";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.initialFileSelectionTable.ResumeLayout(false);
             this.initialFileSelectionTable.PerformLayout();
