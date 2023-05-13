@@ -1,4 +1,5 @@
 ﻿using System.Reflection.PortableExecutable;
+using System.Windows.Forms;
 
 namespace oriwotw_save_tool
 {
@@ -53,7 +54,7 @@ namespace oriwotw_save_tool
             this.addButton = new System.Windows.Forms.Button();
             this.selectReplaceOrInsertActionLabel = new System.Windows.Forms.Label();
             this.nameRepInsAddPaddingPanel = new System.Windows.Forms.Panel();
-            this.nameRepInsAddTextBox = new System.Windows.Forms.TextBox();
+            this.customNameTextBox = new System.Windows.Forms.TextBox();
             this.nameRepInsAddLabel = new System.Windows.Forms.Label();
             this.initialFileSelectionTable.SuspendLayout();
             this.chooseInitialFilePaddingPanel.SuspendLayout();
@@ -300,8 +301,7 @@ namespace oriwotw_save_tool
             this.statusTextLabel.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
             this.statusTextLabel.Size = new System.Drawing.Size(200, 24);
             this.statusTextLabel.TabIndex = 19;
-            this.statusTextLabel.Text = "Fuck you";
-            this.statusTextLabel.Click += new System.EventHandler(this.statusTextLabel_Click);
+            this.statusTextLabel.Text = "Select initial file";
             // 
             // selectReplaceOrInsertTable
             // 
@@ -333,6 +333,7 @@ namespace oriwotw_save_tool
             this.insertButton.TabIndex = 2;
             this.insertButton.Text = "Insert";
             this.insertButton.UseVisualStyleBackColor = true;
+            this.insertButton.Click += new System.EventHandler(this.InsertButton_Click);
             // 
             // replaceButton
             // 
@@ -345,6 +346,7 @@ namespace oriwotw_save_tool
             this.replaceButton.TabIndex = 0;
             this.replaceButton.Text = "Replace";
             this.replaceButton.UseVisualStyleBackColor = true;
+            this.replaceButton.Click += new System.EventHandler(this.ReplaceButton_Click);
             // 
             // addButton
             // 
@@ -357,6 +359,7 @@ namespace oriwotw_save_tool
             this.addButton.TabIndex = 1;
             this.addButton.Text = "Add";
             this.addButton.UseVisualStyleBackColor = true;
+            this.addButton.Click += new System.EventHandler(this.AddButton_Click);
             // 
             // selectReplaceOrInsertActionLabel
             // 
@@ -373,21 +376,21 @@ namespace oriwotw_save_tool
             // nameRepInsAddPaddingPanel
             // 
             this.nameRepInsAddPaddingPanel.AutoSize = true;
-            this.nameRepInsAddPaddingPanel.Controls.Add(this.nameRepInsAddTextBox);
+            this.nameRepInsAddPaddingPanel.Controls.Add(this.customNameTextBox);
             this.nameRepInsAddPaddingPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.nameRepInsAddPaddingPanel.Location = new System.Drawing.Point(6, 186);
             this.nameRepInsAddPaddingPanel.Name = "nameRepInsAddPaddingPanel";
-            this.nameRepInsAddPaddingPanel.Padding = new System.Windows.Forms.Padding(3);
+            this.nameRepInsAddPaddingPanel.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.nameRepInsAddPaddingPanel.Size = new System.Drawing.Size(322, 29);
             this.nameRepInsAddPaddingPanel.TabIndex = 15;
             // 
-            // nameRepInsAddTextBox
+            // customNameTextBox
             // 
-            this.nameRepInsAddTextBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.nameRepInsAddTextBox.Location = new System.Drawing.Point(3, 3);
-            this.nameRepInsAddTextBox.Name = "nameRepInsAddTextBox";
-            this.nameRepInsAddTextBox.Size = new System.Drawing.Size(316, 23);
-            this.nameRepInsAddTextBox.TabIndex = 0;
+            this.customNameTextBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.customNameTextBox.Location = new System.Drawing.Point(4, 3);
+            this.customNameTextBox.Name = "customNameTextBox";
+            this.customNameTextBox.Size = new System.Drawing.Size(314, 23);
+            this.customNameTextBox.TabIndex = 0;
             // 
             // nameRepInsAddLabel
             // 
@@ -396,9 +399,9 @@ namespace oriwotw_save_tool
             this.nameRepInsAddLabel.Location = new System.Drawing.Point(6, 165);
             this.nameRepInsAddLabel.Name = "nameRepInsAddLabel";
             this.nameRepInsAddLabel.Padding = new System.Windows.Forms.Padding(3);
-            this.nameRepInsAddLabel.Size = new System.Drawing.Size(214, 21);
+            this.nameRepInsAddLabel.Size = new System.Drawing.Size(169, 21);
             this.nameRepInsAddLabel.TabIndex = 14;
-            this.nameRepInsAddLabel.Text = "Name replacement/insertion/addition";
+            this.nameRepInsAddLabel.Text = "Name (for insertion/addition)";
             // 
             // Form1
             // 
@@ -461,7 +464,7 @@ namespace oriwotw_save_tool
 
         private Label selectReplaceOrInsertActionLabel;
         private Panel nameRepInsAddPaddingPanel;
-        private TextBox nameRepInsAddTextBox;
+        private TextBox customNameTextBox;
         private Label nameRepInsAddLabel;
 
         private Label statusTextLabel;
