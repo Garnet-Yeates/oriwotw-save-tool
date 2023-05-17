@@ -413,7 +413,7 @@ namespace oriwotw_save_tool
             this.Controls.Add(this.basePanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.MaximumSize = new System.Drawing.Size(400, 340);
+            this.MaximumSize = new System.Drawing.Size(450, 340);
             this.MinimumSize = new System.Drawing.Size(350, 340);
             this.Name = "Form1";
             this.Text = "Ori Save Tool";
