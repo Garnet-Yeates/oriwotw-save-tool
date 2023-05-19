@@ -7,27 +7,41 @@ namespace oriwotw_save_tool
     {
         public Form1()
         {
-            PersistantAppData = new();
+            PersistentAppData = new();
             InitializeComponent();
         }
 
+        /// <summary> Removes the .uberstate from a string</summary>
+        private static string RemoveExt(string s) => s.Replace(".uberstate", "");
+
+        /// <summary>
+        /// Upon loading the form, the application will reset all the initial/replacement fields to their default
+        /// state and also read the persistent data. If the persistent data exists it will select their
+        /// last-chosen replacement file (usually saveFile[0-9].uberstate) and fill the replacementFile field with this
+        /// information.
+        /// </summary>
         private void Form1_Load(object sender, EventArgs e)
         {
             ResetInitialFields();
             ResetReplacementFileFields();
 
-            // If there is an error reading then PersistantAppData will remain unchanged. Once WritePersistantData() is called this
+            // If there is an error reading then PersistentAppData will remain unchanged. Once WritePersistentData() is called this
             // should be fixed (unless there are other underlying issues such as no local folder or file perms)
-            ReadPersistantData();
+            ReadPersistentData();
 
-            if (!string.IsNullOrEmpty(PersistantAppData.LastReplacementFileFullPath))
+            if (!string.IsNullOrEmpty(PersistentAppData.LastReplacementFileFullPath))
             {
-                SetReplacementFile(PersistantAppData.LastReplacementFileFullPath);
+                SetReplacementFile(PersistentAppData.LastReplacementFileFullPath);
             }
 
             chooseFileDialog.Filter = "Ori Save Files (*.uberstate)|*.uberstate";
         }
 
+        /// <summary>This is used for choosing both the initial file and the replacement file. The directory that it will
+        /// open up to depends on whether the initial or replacement file is being chosen. The appliation will remember the
+        /// users' directory preference for each file type (e.g usually Local/Ori for replacement file and usually 
+        /// StreamingAssets/Saves for initial file) and store this preference inside PersistentData.json to be used.
+        /// </summary>
         private readonly OpenFileDialog chooseFileDialog = new();
 
         /// <summary>
@@ -52,15 +66,19 @@ namespace oriwotw_save_tool
         /// </summary>
         private readonly Regex separatorPattern = new(@"[^a-zA-Z0-9]+");
 
-        private string StatusText
-        {
-            set => this.statusTextLabel.Text = value;
-        }
-
+        /// <summary>%Appdata%/Local/ORIWOTW Save Tool</summary>
         private static readonly string appFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ORIWOTW Save Tool");
-        private static readonly string appSaveFilePath = Path.Combine(appFolderPath, "PersistantData.json");
 
-        /// <summary>Makes sure that our application save folder and save file exist and if they dont it will create them</summary>
+        /// <summary>ORIWOTW Save Tool/PersistentData.json </summary>
+        private static readonly string appSaveFilePath = Path.Combine(appFolderPath, "PersistentData.json");
+
+        /// <summary>
+        /// This method makes sure that there exists a JSON file: %AppData%/Local/ORIWOTW Save Tool/PersistentData.json
+        /// If either the folder or file do not exist it will attempt to create the folder/file. If this cannot be done,
+        /// whether it be from a security exception or if the %AppData%/Local folder cannot be found, then it will 
+        /// change the StatusText to an error message and return false.
+        /// </summary>
+        /// <returns></returns>
         private bool SaveFileCheck()
         {
             if (!Directory.Exists(appFolderPath))
@@ -71,7 +89,7 @@ namespace oriwotw_save_tool
                 }
                 catch (Exception)
                 {
-                    StatusText = "Error creating directory for persistant data (run as admin)";
+                    StatusText = "Error creating directory for persistent data (run as admin)";
                     return false;
                 }
             }
@@ -84,7 +102,7 @@ namespace oriwotw_save_tool
                 }
                 catch (Exception)
                 {
-                    StatusText = "Error creating file for persistant data (run as admin)";
+                    StatusText = "Error creating file for persistent data (run as admin)";
                     return false;
                 }
             }
@@ -92,13 +110,19 @@ namespace oriwotw_save_tool
             return true;
         }
 
-        public class PersistantData
+
+        /// <summary>
+        /// This is an object in memory that is a representation of the JSON file stored at
+        /// "../AppData/Local/ORIWOTW Save Tool". This JSON file stores information about where
+        /// the user normally selects their saves from for the initial/replacement files for the FileChoosers.
+        /// </summary>
+        public class PersistentData
         {
             public string LastInitialFileDir { get; set; }
             public string LastReplacementFileDir { get; set; }
             public string LastReplacementFileFullPath { get; set; }
 
-            public PersistantData()
+            public PersistentData()
             {
                 LastInitialFileDir = "";
                 LastReplacementFileDir = "";
@@ -106,9 +130,19 @@ namespace oriwotw_save_tool
             }
         }
 
-        private PersistantData PersistantAppData;
+        /// At the start of the app and during other times this field will get refreshed with the 
+        /// contents of the JSON file. If for some reason the JSON file cannot be accessed or loaded 
+        /// properly, this field won't get refreshed. This is so that even if the persistent file system 
+        /// stuff doesn't work, the app will still be able to store information (within memory) about what folders the 
+        /// FileChoosers should open up to (at least until it closes)
+        private PersistentData PersistentAppData;
 
-        private bool ReadPersistantData()
+        /// <summary>
+        /// Attempts to read the PersistentData.json file stored at appSaveFilePath. After reading it, the PersistentAppData field will be refreshed.
+        /// If the SaveFileCheck fails or if the JSON file cannot be read/parsed, the PersistentAppData field 
+        /// simply will not be updated and the method will return false.
+        /// </summary>
+        private bool ReadPersistentData()
         {
             if (!SaveFileCheck())
             {
@@ -120,23 +154,27 @@ namespace oriwotw_save_tool
 
             try
             {
-                PersistantData? tryAppData = JsonSerializer.Deserialize<PersistantData>(json);
+                PersistentData? tryAppData = JsonSerializer.Deserialize<PersistentData>(json);
 
                 // If this statement is false the ERR handling code will run
-                if (tryAppData is PersistantData appData)
+                if (tryAppData is PersistentData appData)
                 {
-                    PersistantAppData = appData;
+                    PersistentAppData = appData;
                     return true;
                 }
             }
             catch (Exception) { /* If we run into a parsing exception, the ERR handling code will run */ }
 
-            // If we run into error reading PersistantData and replacing the contents of PersistantAppData field, we won't update the field.
-            // Instead we will continue to use the one in memory so it will at least be persistant until they close the app
+            // If we run into error reading PersistentData and replacing the contents of PersistentAppData field, we won't update the field.
+            // Instead we will continue to use the one in memory so it will at least be persistent until they close the app
             return false;
         }
 
-        private bool WritePersistantData()
+        /// <summary>
+        /// Attempts to write the PersistentAppData field to PersistentData.json file. If the SaveFileCheck
+        /// fails or if the JSON file cannot be read/parsed it will return false
+        /// </summary>
+        private bool WritePersistentData()
         {
             if (!SaveFileCheck())
             {
@@ -150,20 +188,20 @@ namespace oriwotw_save_tool
             }
             catch (Exception)
             {
-                StatusText = "Error clearing persistant data save file";
+                StatusText = "Error clearing persistent data save file";
                 return false;
             }
 
             try
             {
-                string jsonString = JsonSerializer.Serialize(PersistantAppData, new JsonSerializerOptions() { WriteIndented = true });
+                string jsonString = JsonSerializer.Serialize(PersistentAppData, new JsonSerializerOptions() { WriteIndented = true });
                 using StreamWriter outputFile = new(appSaveFilePath);
                 outputFile.WriteLine(jsonString);
                 return true;
             }
             catch (Exception)
             {
-                StatusText = "Error writing persistant data save file";
+                StatusText = "Error writing persistent data save file";
                 return false;
             }
         }
@@ -191,9 +229,15 @@ namespace oriwotw_save_tool
             this.upShiftButton.Enabled = false;
 
             // Everything below here is set in SetReplacementFile
+
+            // These 3 buttons require both replacement and initial file to be set
+            // so we reset them here when the initial fields reset (even though 
+            // resetting the initial fields has no change on the replacement fields)
             this.replaceButton.Enabled = false;
             this.insertButton.Enabled = false;
             this.addButton.Enabled = false;
+            // ^ at the end of SetInitialFile, SetReplacementFile() will be called if there
+            // is text in its cooresponding field, so these buttons will be reactivated
 
             // Excluded things below
             // TODO instead of resetting these we just check validity (i.e make sure file still exists)
@@ -205,11 +249,11 @@ namespace oriwotw_save_tool
 
         private void ChooseInitialFileButton_Click(object sender, EventArgs e)
         {
-            ReadPersistantData();
+            ReadPersistentData();
 
-            if (!string.IsNullOrEmpty(PersistantAppData.LastInitialFileDir))
+            if (!string.IsNullOrEmpty(PersistentAppData.LastInitialFileDir))
             {
-                chooseFileDialog.InitialDirectory = PersistantAppData.LastInitialFileDir;
+                chooseFileDialog.InitialDirectory = PersistentAppData.LastInitialFileDir;
             }
 
             if (this.chooseFileDialog.ShowDialog() == DialogResult.OK)
@@ -218,8 +262,8 @@ namespace oriwotw_save_tool
                 if (SetInitialFile(chooseFileDialog.FileName))
                 {
                     // We know directoryPath was just updated and also not null if SetInitialFile returned true
-                    PersistantAppData.LastInitialFileDir = directoryPath;
-                    WritePersistantData();
+                    PersistentAppData.LastInitialFileDir = directoryPath;
+                    WritePersistentData();
                 }
             }
         }
@@ -277,7 +321,7 @@ namespace oriwotw_save_tool
                 }
             }
 
-            this.StatusText = "Choose a basic control, or select file to replace/insert/add";
+            this.StatusText = "Choose an action or select replacement for more actions";
 
             // Find start index
             for (int i = 0; i < directoryFileNames.Length; i++)
@@ -395,11 +439,11 @@ namespace oriwotw_save_tool
 
         private void ChooseReplacementFileButton_Click(object sender, EventArgs e)
         {
-            ReadPersistantData();
+            ReadPersistentData();
 
-            if (!string.IsNullOrEmpty(PersistantAppData.LastReplacementFileDir))
+            if (!string.IsNullOrEmpty(PersistentAppData.LastReplacementFileDir))
             {
-                chooseFileDialog.InitialDirectory = PersistantAppData.LastReplacementFileDir;
+                chooseFileDialog.InitialDirectory = PersistentAppData.LastReplacementFileDir;
             }
 
             if (this.chooseFileDialog.ShowDialog() == DialogResult.OK)
@@ -408,9 +452,9 @@ namespace oriwotw_save_tool
                 if (SetReplacementFile(chooseFileDialog.FileName))
                 {
                     // We know replacementFileDir was JUST updated and also not null if SetReplacementFile returned true
-                    PersistantAppData.LastReplacementFileDir = this.replacementFileDir;
-                    PersistantAppData.LastReplacementFileFullPath = this.replacementFileFullPath;
-                    WritePersistantData();
+                    PersistentAppData.LastReplacementFileDir = this.replacementFileDir;
+                    PersistentAppData.LastReplacementFileFullPath = this.replacementFileFullPath;
+                    WritePersistentData();
                 }
             }
         }
@@ -458,6 +502,7 @@ namespace oriwotw_save_tool
             // re-enable the buttons
             if (this.initialFileIndex == -1)
             {
+                this.StatusText = "Choose initial file";
                 return true;
             }
 
@@ -465,10 +510,10 @@ namespace oriwotw_save_tool
             this.insertButton.Enabled = true;
             this.addButton.Enabled = true;
 
+            this.StatusText = "Choose an action";
             return true;
         }
 
-        private static string RemoveExt(string s) => s.Replace(".uberstate", "");
 
         private void ReplaceButton_Click(object sender, EventArgs e)
         {

@@ -23,6 +23,11 @@ namespace oriwotw_save_tool
             base.Dispose(disposing);
         }
 
+        private string StatusText
+        {
+            set => this.statusTextLabel.Text = value;
+        }
+
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -77,7 +82,7 @@ namespace oriwotw_save_tool
             this.selectInitialLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.selectInitialLabel.Size = new System.Drawing.Size(140, 18);
             this.selectInitialLabel.TabIndex = 0;
-            this.selectInitialLabel.Text = "Select file to replace/shift";
+            this.selectInitialLabel.Text = "Initial file to replace/move (in StreamingAssets/Saves)";
             // 
             // initialFileSelectionTable
             // 
@@ -212,7 +217,7 @@ namespace oriwotw_save_tool
             this.selectReplacementLabel.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.selectReplacementLabel.Size = new System.Drawing.Size(207, 21);
             this.selectReplacementLabel.TabIndex = 12;
-            this.selectReplacementLabel.Text = "Select replacement/insertion/addition";
+            this.selectReplacementLabel.Text = "Replacement file to copy (usually saveFileX.uberstate)";
             // 
             // replacementFileSelectionTable
             // 
@@ -302,7 +307,7 @@ namespace oriwotw_save_tool
             this.statusTextLabel.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
             this.statusTextLabel.Size = new System.Drawing.Size(200, 24);
             this.statusTextLabel.TabIndex = 19;
-            this.statusTextLabel.Text = "Select initial file";
+            this.statusTextLabel.Text = "Choose initial file";
             // 
             // selectReplaceOrInsertTable
             // 
@@ -372,7 +377,7 @@ namespace oriwotw_save_tool
             this.selectReplaceOrInsertActionLabel.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.selectReplaceOrInsertActionLabel.Size = new System.Drawing.Size(74, 21);
             this.selectReplaceOrInsertActionLabel.TabIndex = 17;
-            this.selectReplaceOrInsertActionLabel.Text = "Select action";
+            this.selectReplaceOrInsertActionLabel.Text = "Insert copied file at initial file's spot, or replace initial file";
             // 
             // nameRepInsAddPaddingPanel
             // 
@@ -402,7 +407,7 @@ namespace oriwotw_save_tool
             this.nameRepInsAddLabel.Padding = new System.Windows.Forms.Padding(3);
             this.nameRepInsAddLabel.Size = new System.Drawing.Size(169, 21);
             this.nameRepInsAddLabel.TabIndex = 14;
-            this.nameRepInsAddLabel.Text = "Name (for insertion/addition)";
+            this.nameRepInsAddLabel.Text = "Name newly copied file (if inserting or adding)";
             // 
             // Form1
             // 
